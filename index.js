@@ -11,8 +11,9 @@ const client = new Client({ intents: [
 ] });
 
 const convertSystemTo24hr = () => {
-    const now = DateTime.local();
-    return now.toFormat('HH:mm');
+    const now = DateTime.utc();
+    const timeInGMT7 = now.setZone('Asia/Ho_Chi_Minh');
+    return timeInGMT7.toFormat('HH:mm');
 };
 
 client.once('ready', () => {
@@ -30,19 +31,19 @@ client.on('messageCreate', async (message) => {
     const match = content.match(regex);
     if (match) {
         const finishTimeStr = match[1];
-        const now = DateTime.local();
-
+        const now = DateTime.utc();
+		const timeInGMT7 = now.setZone('Asia/Ho_Chi_Minh');
         // Đọc và chuyển đổi thời gian kết thúc
         let finishTime;
         try {
-            finishTime = DateTime.fromFormat(finishTimeStr, 'HH:mm').set({ year: now.year, month: now.month, day: now.day });
+            finishTime = DateTime.fromFormat(finishTimeStr, 'HH:mm').set({ year: timeInGMT7.year, month: timeInGMT7.month, day: timeInGMT7.day });
         } catch (error) {
             await message.channel.send('❌ Không đọc được thời gian kết thúc.');
             return;
         }
 
         const systemTimeStr = convertSystemTo24hr();
-        const systemTime = DateTime.fromFormat(systemTimeStr, 'HH:mm').set({ year: now.year, month: now.month, day: now.day });
+        const systemTime = DateTime.fromFormat(systemTimeStr, 'HH:mm').set({ year: timeInGMT7.year, month: timeInGMT7.month, day: timeInGMT7.day });
 
         console.log(`Giờ hệ thống: ${systemTimeStr}`);
         console.log(`Giờ dự toán kết thúc: ${finishTimeStr}`);
