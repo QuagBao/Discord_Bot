@@ -18,7 +18,6 @@ const convertSystemTo24hr = () => {
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
-    console.log('Bot is here');
 });
 
 client.on('messageCreate', async (message) => {
@@ -45,11 +44,7 @@ client.on('messageCreate', async (message) => {
         const systemTimeStr = convertSystemTo24hr();
         const systemTime = DateTime.fromFormat(systemTimeStr, 'HH:mm').set({ year: timeInGMT7.year, month: timeInGMT7.month, day: timeInGMT7.day });
 
-        console.log(`Giờ hệ thống: ${systemTimeStr}`);
-        console.log(`Giờ dự toán kết thúc: ${finishTimeStr}`);
-
         const delay = finishTime.diff(systemTime, 'seconds').seconds;
-        console.log(`Chênh lệch giờ: ${delay}`);
 
         if (delay <= 0) {
             // Quá thời gian rồi → phản hồi luôn
